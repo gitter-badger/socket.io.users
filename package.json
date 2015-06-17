@@ -1,0 +1,35 @@
+{
+  "name": "socket.io.users",
+  "version": "1.0.0",
+  "description": "This is a node js module for socket.io applications. One user per client. User means new tab, new browser but same client-machine-user. This module helps developer to find which socket is from who. The package contains a server which is build on top of the socket.io server, you have to use it in order the module to work.",
+  "main": "index.js",
+  "directories": {
+    
+  },
+  "dependencies": {
+    "cookie-parser": "^1.3.5",
+    "express-session": "^1.11.3",
+    "socket.io": "^1.3.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kataras/socket.io.users.git"
+  },
+  "keywords": [
+    "socket.io",
+    "express",
+    "session",
+    "socket.io.users",
+    "socket-io-users"
+  ],
+  "author": "Makis Maropoulos <makis@ideopod.com> (https://github.com/kataras)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/kataras/socket.io.users/issues"
+  },
+  "homepage": "https://github.com/kataras/socket.io.users#readme"
+}
