@@ -27,15 +27,17 @@ ioUsers.Session(app);
 
 socketServer.start();
 
-socketServer.on('connected',function(io){
-// Someone (io.user) connected for first time.
-   
+users.on('connected',function(io){
+ // For first time this io.user.id has connected.
 });
 
-socketServer.on('disconnected',function(io){
-// io.user.id  has gone.
+users.on('connection',function(io){
+ // Every time SOCKET(first time user-connection, or existing user with new tab or other browser window) connected.
 });
 
+users.on('disconnected',function(io){
+ // io.user has disconnected, means all browser tabs or windows are closed by user.
+});
 ```
 ### Any js file connected to your main application
 
