@@ -21,11 +21,12 @@ var app = express();
 var server = require('http').createServer(app);
 var ioUsers = require('socket.io.users');
 var socketServer = ioUsers.Server(server);
-
+var users = ioUsers.Users;
 
 ioUsers.Session(app);
 
 socketServer.start();
+
 
 users.on('connected',function(io){
  // For first time this io.user.id has connected.
@@ -42,6 +43,7 @@ users.on('disconnected',function(io){
 ### Any js file connected to your main application
 
 ```js
+//just import this and you are ready to go
 var users =  require('socket.io.users').Users;
 
 
