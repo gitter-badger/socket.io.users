@@ -1,0 +1,21 @@
+{
+  "name": "socket_io_test",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./server"
+  },
+  "dependencies": {
+    "body-parser": "latest",
+    "cookie-parser": "latest",
+    "debug": "~2.2.0",
+    "ejs": "latest",
+    "express": "latest",
+    "express-session": "^1.11.3",
+    "morgan": "~1.5.3",
+    "serve-favicon": "latest",
+    "session-file-store": "0.0.13",
+    "socket.io": "latest",
+    "socket.io.users": "^1.0.11"
+  }
+}

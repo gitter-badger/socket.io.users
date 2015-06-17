@@ -1,0 +1,69 @@
+<html>
+    <head><title>merika geo tests</title></head>
+    <body>
+        <style>
+            html,
+            body,
+            #google_canvas {
+                height:100%;
+            }
+            #google_canvas h1 {
+                font-size:16px;
+            }
+            #google_canvas h2 {
+                font-size:14px;
+                font-weight:300;
+            }
+        </style>
+        <script src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+
+        <script type="application/javascript">
+            var long,lat;
+            (function() {
+
+
+
+                var map;
+
+                var mapOptions = {
+                    zoom: 15,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+
+           //     map = new google.maps.Map(document.getElementById('google_canvas'), mapOptions);
+
+
+
+                var geolocate = new google.maps.LatLng(lat, long);
+                console.dir(geolocate);
+//                var infowindow = new google.maps.InfoWindow({
+//                    map: map,
+//                    position: geolocate,
+//                    content:
+//                    '<h1>Location pinned from HTML5 Geolocation!</h1>' +
+//                    '<h2>Latitude: ' + lat + '</h2>' +
+//                    '<h2>Longitude: ' + long + '</h2>'
+//                });
+//
+//                map.setCenter(geolocate);
+
+
+
+
+
+            })();
+
+            function getgeoip(json) {
+                var country=json.country;
+                var timezone = json.timezone;
+                long = json.longitude;
+                lat = json.latitude;
+            }
+
+        </script>
+
+        <script type="application/javascript" src="http://www.telize.com/geoip?callback=getgeoip">
+        </script>
+        <div style="width:800px;height:800px;" id="google_canvas"></div>
+    </body>
+</html>

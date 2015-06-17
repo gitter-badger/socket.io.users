@@ -19,45 +19,108 @@ $ npm install socket.io.users
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-var ioUsers = require('socket.io.users');
-var socketServer = ioUsers.Server(server);
-var users = ioUsers.Users;
+var path=require('path');
+var bodyParser = require('body-parser');
+var io = require('socket.io')(server);
+var socketUsers = require('socket.io.users'); //IMPORTANT
+var users = socketUsers.Users;
+var eyeService = require('./lib/socket.service.eye');
 
-ioUsers.Session(app);
+app.set('view options',{layout:false});
+app.engine('html',require('ejs').renderFile);
 
-socketServer.start();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:false}));
 
+socketUsers.Session(app);//IMPORTANT
 
-users.on('connected',function(io){
- // For first time this io.user.id has connected.
+app.use(express.static(path.join(__dirname,'public')));
+
+app.get('/',function(req,res){
+    res.render('index.html');
 });
 
-users.on('connection',function(io){
- // Every time SOCKET(first time user-connection, or existing user with new tab or other browser window) connected.
+io.use(socketUsers.Middleware());//IMPORTANT
+
+
+users.on('connected',function(user){
+    console.log('User has connected with ID: '+ user.id);
 });
 
-users.on('disconnected',function(io){
- // io.user has disconnected, means all browser tabs or windows are closed by user.
+users.on('connection',function(user){
+    console.log('Socket ID: '+user.socket.id+' added to user with ID: '+user.id);
+});
+
+
+io.on('connection',function(socket){//this executes after connected and  connection
+    console.log('IO DEBUG: Socket '+ socket.id+ ' is ready \n'); 
+});
+
+users.on('disconnected',function(user){
+    console.log('User with ID: '+user.id+'is gone away :(');
+});
+
+
+eyeService(io);//A custom service for this example. look how easy is to manage your code with users and socket.io.users module
+
+
+server.listen(8080,function(){
+    console.log('Server is running on 8080'); 
 });
 ```
-### Any js file connected to your main application
+### socket.service.eye.js
 
 ```js
-//just import this and you are ready to go
-var users =  require('socket.io.users').Users;
+var users = require('socket.io.users').Users;//IMPORTANT, this is the only require you want here.
 
+module.exports = function(io){
 
-users.on('connected',function(io){
- // For first time this io.user.id has connected.
-});
+    var eyes = [];
+    var addEye = function(eye){
+        var exists=false;
+        for(var i =0; i <eyes.length; i++){
+            if( eyes[i].id === eye.id && eyes[i].article === eye.article ){
+                exists=true;
+                break;
+            }
 
-users.on('connection',function(io){
- // Every time SOCKET(first time user-connection, or existing user with new tab or other browser window) connected.
-});
+        }
+        if(exists===false){
+            eyes.push(eye);   
+        }
+        return !exists;
+    };
 
-users.on('disconnected',function(io){
- // io.user has disconnected, means all browser tabs or windows are closed by user.
-});
+    var getByArticle = function(article){
+        for(var i =0; i <eyes.length; i++){
+            if( eyes[i].article === article ){
+                return eye;
+            }
+
+        }
+    };
+
+    users.on('connected',function(user){
+        console.log('A user has connected to EYE.'); 
+    });
+
+    users.on('connection',function(user){
+        io.to(user.socket.id).emit('push eyes',eyes);
+        user.socket.on('article read',function (eye){
+            eye.id = user.id;
+            if(addEye(eye)){
+                io.emit('eye added',eye); 
+                io.to(user.id).emit('eye added',{id: 'Myself',article: 'You have seen an article', town: 'Server'});
+
+            }
+        }); 
+    });
+
+    users.on('disconnected',function(user){
+        console.log('A user has been disconnected from EYE.'); 
+    });
+
+};
 
 ```
 
