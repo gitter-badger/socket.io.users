@@ -1,4 +1,4 @@
-# socket-io-users
+# socket.io.users
 
 This is a node js module for `socket.io` applications. `One user per client`. User means `new tab, new browser but same client-machine-user`. `This module helps developer to find which socket is from who`. The package contains a `server which is build on top of the socket.io` server, you have to use it in order the module to work.
 
@@ -7,10 +7,10 @@ This is a node js module for `socket.io` applications. `One user per client`. Us
 ## Installation
 
 ```sh
-$ npm install socket-io-users
+$ npm install socket.io.users
 ```
 
-[NPM] https://www.npmjs.com/package/socket-io-users
+[NPM] https://www.npmjs.com/package/socket.io.users
 
 ## Example
 
@@ -19,7 +19,7 @@ $ npm install socket-io-users
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-var ioUsers = require('socket-io-users');
+var ioUsers = require('socket.io.users');
 var socketServer = ioUsers.Server(server);
 
 
@@ -40,7 +40,7 @@ socketServer.on('disconnected',function(io){
 ### Any js file connected to your main application
 
 ```js
-var users =  require('socket-io-users').Users;
+var users =  require('socket.io.users').Users;
 
 
 users.on('connected',function(io){
@@ -60,4 +60,4 @@ users.on('disconnected',function(io){
 
 ### [GPL-3.0 Licensed](LICENSE)
 
-[downloads-url]: https://www.npmjs.com/package/socket-io-users
+[downloads-url]: https://www.npmjs.com/package/socket.io.users
