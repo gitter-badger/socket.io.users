@@ -1,6 +1,6 @@
 # socket.io.users
 
-This is a node js module for `socket.io` applications. `One user per client`. User means `new tab, new browser but same client-machine-user`. `This module helps developer to find which socket is from who`. The package contains a `server which is build on top of the socket.io` server, you have to use it in order the module to work.
+This is a node js module for socket.io applications. One user per client. User means new tab, new browser but same client-machine-user. This module helps developer to find which socket is from who. The package contains a server which is build on top of the socket.io server, you DO NOT have to use it in order the module to work, but you have to use the socket.session and socket.middleware.
 
 ** This is my first node module, almost one week  experience with node js.  This means if you want to support this project, you are welcome! **
 
