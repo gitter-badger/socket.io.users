@@ -16,6 +16,6 @@
     "serve-favicon": "latest",
     "session-file-store": "0.0.13",
     "socket.io": "latest",
-    "socket.io.users": "^1.0.11"
+    "socket.io.users": "^1.0.14"
   }
 }

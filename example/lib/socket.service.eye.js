@@ -1,4 +1,4 @@
-var users = require('socket.io.users').Users; //IMPORTANT
+var users = require('./../../index').Users; //IMPORTANT
 
 module.exports = function(io){
 

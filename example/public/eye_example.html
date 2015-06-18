@@ -33,28 +33,16 @@ http://facebook.com/makisjava
     </head>
     <body>
         <div class="container">
+            <input type="text" id="townTxt" placeholder="town" /><br/>
+            <input type="text" id="articleTxt" placeholder="article sublink" />
+            <br/>
 
-            <div id="conversationsArea" style="width:300px;height:50px;">
-
-            </div> <input type="text" id="joinConversationTxt" placeholder="type a room to join"/><button type="button" class="btn btn-sm btn-danger" id="joinConversationBtn" >Join</button>  <br/>
-            Users inside conversations: 
-            <div id="usersArea" style="width:500px;height:50px;">
-
-            </div>
+            <button type="button" id="viewArticleBtn">Send the test</button>
             <hr/>
 
             <br/>
 
-            <div id="messagesArea" style="width:500px;height:500px;">
-
-            </div>
-
-            <br/>
-
-            <input type="text" id="messageTxt" placeholder="message to send" />
-
-            <button type="button" id="sendMessageBtn" class="btn btn-sm btn-primary">Send message</button>
-
+            <div id="eyesArea"></div>
         </div>
 
 
@@ -67,6 +55,6 @@ http://facebook.com/makisjava
         <script src="js/libs/angular-ui-router.min.js" ></script>
         <script src="js/libs/angular-resource.min.js" ></script>
         <script src="js/custom_prototypes.js" ></script>
-        <script src="js/chat.js" ></script>
+        <script src="js/app.js" ></script>
     </body>
 </html>
