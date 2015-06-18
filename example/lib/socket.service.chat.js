@@ -84,14 +84,17 @@ module.exports = function(io){
 
 
         currentSocket.on('conversation join',function(roomName){
+            //  console.log('true or false: '+ user.belong(roomName));
             if(debug)
                 console.log('Conversation JOIN: ' +roomName + ' asked by '+user.id);
 
-            user.join(roomName);
-            var conversation= joinConversation(roomName,user.id);
-            if(debug)
-                console.log('Conversation join added '+ conversation.room + ' with users len: '+ conversation.users.length);
-            io.to(roomName).emit('conversation user added',{room: roomName,user: user.id});
+            var socketAlreadyJoined = user.join(roomName);
+            if(!socketAlreadyJoined){
+                var conversation= joinConversation(roomName,user.id);
+                if(debug )
+                    console.log('Conversation join added '+ conversation.room + ' with users len: '+ conversation.users.length);
+                io.to(roomName).emit('conversation user added',{room: roomName,user: user.id});
+            }
         });
 
         currentSocket.on('conversation message',function(data){
@@ -104,7 +107,7 @@ module.exports = function(io){
     });
 
     users.on('disconnected',function(user){
-      
+
         //The socket.io.users module automatically leaves all rooms which all user's sockets are inside, when user disconnects ( = all sockets disconnected).  
         //but here we just clean up the conversations for this specific app/example.
         clearUserConversations(user.id);

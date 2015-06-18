@@ -93,10 +93,16 @@ $(document).ready(function(){
 
     $("#joinConversationBtn").click(function(){
         var roomName = $("#joinConversationTxt").val();
-        socket.emit('conversation join', roomName);
-        console.log('Emit join to: ' +roomName);
-        joinConversation(roomName);
-        $("#joinConversationTxt").val("");
+
+        if(rooms.indexOf(roomName)!==-1){
+            window.alert('You are already in this Room!');
+
+        }else{
+            socket.emit('conversation join', roomName);
+            console.log('Emit join to: ' +roomName);
+
+            joinConversation(roomName);
+            $("#joinConversationTxt").val("");}
     });
 
 });
