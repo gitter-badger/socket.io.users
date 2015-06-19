@@ -44,7 +44,13 @@ $(document).ready(function(){
     socket.on('connect',function(){
         console.log('Connected to server.');
     });
+    
+    socket.on('set username',function(username){
+        console.log('Your username is: '+username);
+        window.alert('Your username setted by server is: 'username);
 
+    });
+    
     socket.on('conversation push',function(_conversations){
         console.log('-----GET----');
         if(_conversations.length ===0){

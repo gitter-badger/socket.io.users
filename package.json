@@ -1,6 +1,6 @@
 {
   "name": "socket.io.users",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "This is a node js module for socket.io applications. One user per client. User means new tab, new browser window but same machine. This module finds and manages which socket is from who and visa versa. Make use of the middleware or the standalone server.",
   "main": "index.js",
   "directories": {

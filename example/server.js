@@ -6,7 +6,6 @@ var bodyParser = require('body-parser');
 var io = require('socket.io')(server);
 var socketUsers = require('./../index'); //IMPORTANT
 var users = socketUsers.Users;
-var eyeService = require('./lib/socket.service.eye');
 
 app.set('view options',{layout:false});
 app.engine('html',require('ejs').renderFile);
@@ -42,8 +41,6 @@ io.use(socketUsers.Middleware());//IMPORTANT
 //    console.log('User with ID: '+user.id+'is gone away :(');
 //});
 
-
-//eyeService(io);
 require('./lib/socket.service.chat')(io);//A custom service for this example. look how easy is to manage your code with users and socket.io.users module
 
 server.listen(8080,function(){

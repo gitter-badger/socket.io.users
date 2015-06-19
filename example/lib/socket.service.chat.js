@@ -9,6 +9,7 @@ module.exports = function(io){
     var conversations = [];
 
 
+    var numName=1;
     function getConversation(room){
         for(var i=0; i<conversations.length;i++){
             if(conversations[i].room === room){
@@ -49,6 +50,7 @@ module.exports = function(io){
         }
         return usersId;
     }
+    
     //user here means user.id, for example purpose
     function clearUserConversations(user){
         var myConvs = getConversationsByUser(user);
@@ -69,6 +71,8 @@ module.exports = function(io){
     users.on('connected',function(user){
         if(debug)
             console.log('A User ('+ user.id+') has connected.');
+        user.store.username = 'user'+numName; // You can use user.store to store your own custom properties describes this user.
+        numName++;
     });
 
     users.on('connection',function(user){
@@ -78,6 +82,7 @@ module.exports = function(io){
 
         setTimeout(function(){
             io.to(currentSocket.id).emit('conversation push',myConvs);
+            io.to(currentSocket.id).emit('set username',user.store.username);
             if(debug)
                 console.log('Push '+myConvs.length+' rooms to socket id: '+currentSocket.id);
         },300);
