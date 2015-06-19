@@ -44,13 +44,13 @@ $(document).ready(function(){
     socket.on('connect',function(){
         console.log('Connected to server.');
     });
-    
+
     socket.on('set username',function(username){
         console.log('Your username is: '+username);
-        window.alert('Your username setted by server is: '+username);
+        //  window.alert('Your username setted by server is: '+username);
 
     });
-    
+
     socket.on('conversation push',function(_conversations){
         console.log('-----GET----');
         if(_conversations.length ===0){
@@ -68,7 +68,14 @@ $(document).ready(function(){
                 console.log('inside user: ' + _conversations[i].users[j]);
 
             }
+            for(var k=0;k< _conversations[i].messages.length;k++){
+                $("#messagesArea").append("<br/>("+_conversations[i].room+") <b>"+_conversations[i].messages[k].user+ " :</b> "+_conversations[i].messages[k].message); 
+            }
         }
+    });
+
+    socket.on('conversation added',function(roomName){
+        joinConversation(roomName);
     });
 
 
@@ -107,7 +114,7 @@ $(document).ready(function(){
             socket.emit('conversation join', roomName);
             console.log('Emit join to: ' +roomName);
 
-            joinConversation(roomName);
+          // on emit  joinConversation(roomName);
             $("#joinConversationTxt").val("");}
     });
 

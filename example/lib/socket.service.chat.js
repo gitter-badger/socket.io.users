@@ -35,7 +35,7 @@ module.exports = function(io){
         if(conv!==undefined){
             conv.users.push(user);   
         }else{
-            conv = {room:room,users:[user]};
+            conv = {room:room,users:[user],messages:[]};
             conversations.push(conv);
         }
         return conv;
@@ -100,12 +100,13 @@ module.exports = function(io){
                     console.log('Conversation join added '+ conversation.room + ' with users len: '+ conversation.users.length);
                 io.to(roomName).emit('conversation user added',{room: roomName,user: user.id});
             }
+            io.to(user.id).emit('conversation added',roomName);
         });
 
         currentSocket.on('conversation message',function(data){
             if(debug)
                 console.log('Conversation MESSAGE '+ user.id + ' to '+data.room +': '+ data.message);
-
+             getConversation(data.room).messages.push({user: user.id, message: data.message});
             io.to(data.room).emit('conversation message added',{room:data.room,message:data.message,user:user.id});
         });
 
