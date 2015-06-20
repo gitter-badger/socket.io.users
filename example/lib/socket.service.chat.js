@@ -1,10 +1,16 @@
 "use strict";
 
-var users = require('./../../index').Users;
+var users = require('./../../index').Users.of('/chat');
 var debug=true;
 
-module.exports = function(io){
 
+module.exports = function(){
+    var io=undefined;
+    if(arguments.length>0){
+        io = arguments[0];   
+    }else{
+        console.error('You did not pass a parameter socket.io inside!');    
+    }
     //{room: 'room', users: ['xxx1','xxx2']};
     var conversations = [];
 
@@ -50,7 +56,7 @@ module.exports = function(io){
         }
         return usersId;
     }
-    
+
     //user here means user.id, for example purpose
     function clearUserConversations(user){
         var myConvs = getConversationsByUser(user);
@@ -68,15 +74,21 @@ module.exports = function(io){
         }
     }
 
-    users.on('connected',function(user){
+    function emitAll(listenerStr,data){
+        for (var nameSpace in io.sockets.manager.namespaces){
+            io.of(nameSpace).emit(listenerStr, data);
+        }   
+    }
+
+    users.on('connected', function(user){
         if(debug)
             console.log('A User ('+ user.id+') has connected.');
         user.store.username = 'user'+numName; // You can use user.store to store your own custom properties describes this user.
         numName++;
     });
 
-    users.on('connection',function(user){
-
+    users.on('connection', function(user){
+        console.log('chat service on connection');
         var currentSocket = user.socket;
         var myConvs = getConversationsByUser(user.id);
 
@@ -106,13 +118,13 @@ module.exports = function(io){
         currentSocket.on('conversation message',function(data){
             if(debug)
                 console.log('Conversation MESSAGE '+ user.id + ' to '+data.room +': '+ data.message);
-             getConversation(data.room).messages.push({user: user.id, message: data.message});
+            getConversation(data.room).messages.push({user: user.id, message: data.message});
             io.to(data.room).emit('conversation message added',{room:data.room,message:data.message,user:user.id});
         });
 
     });
 
-    users.on('disconnected',function(user){
+    users.on('disconnected', function(user){
 
         //The socket.io.users module automatically leaves all rooms which all user's sockets are inside, when user disconnects ( = all sockets disconnected).  
         //but here we just clean up the conversations for this specific app/example.
@@ -123,8 +135,7 @@ module.exports = function(io){
         }
 
 
-    });
-
+    }); 
 
 
 

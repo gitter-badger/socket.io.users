@@ -2,8 +2,6 @@
 
 This is a node js module for socket.io applications. One user per client. User means new tab, new browser window but same machine. This module finds and manages which socket is from who and visa versa. Make use of the middleware or the standalone server.
 
-** This is my first node module, almost one week  experience with node js.  This means if you want to support this project, you are welcome! **
-
 ## Installation
 
 ```sh
@@ -12,7 +10,63 @@ $ npm install socket.io.users
 
 [NPM] https://www.npmjs.com/package/socket.io.users
 
-## Example, very basic chat between different users, also sync user's rooms to all of opened tabs or browser windows (=sockets).
+## Usage
+
+```js
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+
+socketUsers.Session(app);//IMPORTANT
+
+var rootIo = require('socket.io')(server); //default '/' as namespace.
+var chatIo = rootIo.of('/chat');
+var socketUsers = require('socket.io.users');
+
+var rootUsers = socketUsers.Users; /* default '/' as namespace. Each namespace has IT's OWN users object list, but the Id of a user of any other namespace may has the same value if request comes from the same client-machine-user. This makes easy to keep a kind of synchronization between all users of all different namespaces. */
+
+var chatUsers = socketUsers.Users.of('/chat'); // 
+
+
+rootIo.use(socketUsers.Middleware());//IMPORTANT but no errors if you want to skip it for a io.of(namespace) that you don't want the socket.io.users' support. 
+
+chatUsers.use(socketUsers.Middleware());
+
+chatUsers.on('connected',function(user){
+    console.log(user.id + ' has connected to the CHAT');
+    user.store.username = 'username setted by server side'; //at the store property you can store any type of properties and objects you want to share between your user's sockets. 
+    user.socket.on('any event', function(data){ //user.socket is the current socket, to get all connected sockets from this user, use: user.sockets 
+    
+    });
+    chatIo.emit('set username',user.store.username);
+});
+
+rootUsers.on('connected',function(user){
+    console.log('User has connected with ID: '+ user.id);
+});
+
+
+
+rootUsers.on('connection',function(user){
+    console.log('Socket ID: '+user.socket.id+' is user with ID: '+user.id);
+});
+
+rootUsers.on('disconnected',function(user){
+    console.log('User with ID: '+user.id+'is gone away :(');
+});
+
+
+
+//You can still use the io.on events, but the execution is after connected and connection of the 'users' and 'chatUsers', no matter the order.
+rootIo.on('connection',function(socket){
+    console.log('IO DEBUG: Socket '+ socket.id+ ' is ready \n'); 
+});
+
+
+```
+
+
+## Example, very basic chat between different users, also sync user's rooms and messages to all of opened tabs or browser windows (=sockets).
 
 ### server.js
 ```js
@@ -22,8 +76,7 @@ var server = require('http').createServer(app);
 var path=require('path');
 var bodyParser = require('body-parser');
 var io = require('socket.io')(server);
-var socketUsers = require('socket.io.users'); //IMPORTANT
-var users = socketUsers.Users;
+var socketUsers = require('./../index'); //IMPORTANT
 
 app.set('view options',{layout:false});
 app.engine('html',require('ejs').renderFile);
@@ -39,27 +92,23 @@ app.get('/',function(req,res){
     res.render('index.html');
 });
 
-io.use(socketUsers.Middleware());//IMPORTANT
+io.use(socketUsers.Middleware());
 
+var rootUsers = socketUsers.Users; //or socketUsers.Users.of('/');
+rootUsers.on('connection',function(user){
+    user.socket.on('message',function (himsg){
+        console.log(himsg);
+    });
+});
 
-//users.on('connected',function(user){
-//    console.log('User has connected with ID: '+ user.id);
-//});
-//
-//users.on('connection',function(user){
-//    console.log('Socket ID: '+user.socket.id+' added to user with ID: '+user.id);
-//});
-//
-//
-//io.on('connection',function(socket){//this executes after connected and  connection
-//    console.log('IO DEBUG: Socket '+ socket.id+ ' is ready \n'); 
-//});
-//
-//users.on('disconnected',function(user){
-//    console.log('User with ID: '+user.id+'is gone away :(');
-//});
+var chat = io.of('/chat');
+chat.use(socketUsers.Middleware());//IMPORTANT 
+require('./lib/socket.service.chat')(chat); //A custom service for this example. look how easy is to manage your code with users and socket.io.users module
 
-require('./lib/socket.service.chat')(io);//A custom service for this example. look how easy is to manage your code with users and socket.io.users module
+var eye  = io.of('/eye');
+eye.use(socketUsers.Middleware());
+require('./lib/socket.service.eye')(eye);
+
 
 server.listen(8080,function(){
     console.log('Server is running on 8080'); 
@@ -70,11 +119,17 @@ server.listen(8080,function(){
 ```js
 "use strict";
 
-var users = require('socket.io.users').Users;
+var users = require('./../../index').Users.of('/chat');
 var debug=true;
 
-module.exports = function(io){
 
+module.exports = function(){
+    var io=undefined;
+    if(arguments.length>0){
+        io = arguments[0];   
+    }else{
+        console.error('You did not pass a parameter socket.io inside!');    
+    }
     //{room: 'room', users: ['xxx1','xxx2']};
     var conversations = [];
 
@@ -105,7 +160,7 @@ module.exports = function(io){
         if(conv!==undefined){
             conv.users.push(user);   
         }else{
-            conv = {room:room,users:[user]};
+            conv = {room:room,users:[user],messages:[]};
             conversations.push(conv);
         }
         return conv;
@@ -120,7 +175,7 @@ module.exports = function(io){
         }
         return usersId;
     }
-    
+
     //user here means user.id, for example purpose
     function clearUserConversations(user){
         var myConvs = getConversationsByUser(user);
@@ -138,15 +193,21 @@ module.exports = function(io){
         }
     }
 
-    users.on('connected',function(user){
+    function emitAll(listenerStr,data){
+        for (var nameSpace in io.sockets.manager.namespaces){
+            io.of(nameSpace).emit(listenerStr, data);
+        }   
+    }
+
+    users.on('connected', function(user){
         if(debug)
             console.log('A User ('+ user.id+') has connected.');
         user.store.username = 'user'+numName; // You can use user.store to store your own custom properties describes this user.
         numName++;
     });
 
-    users.on('connection',function(user){
-
+    users.on('connection', function(user){
+        console.log('chat service on connection');
         var currentSocket = user.socket;
         var myConvs = getConversationsByUser(user.id);
 
@@ -170,18 +231,19 @@ module.exports = function(io){
                     console.log('Conversation join added '+ conversation.room + ' with users len: '+ conversation.users.length);
                 io.to(roomName).emit('conversation user added',{room: roomName,user: user.id});
             }
+            io.to(user.id).emit('conversation added',roomName);
         });
 
         currentSocket.on('conversation message',function(data){
             if(debug)
                 console.log('Conversation MESSAGE '+ user.id + ' to '+data.room +': '+ data.message);
-
+            getConversation(data.room).messages.push({user: user.id, message: data.message});
             io.to(data.room).emit('conversation message added',{room:data.room,message:data.message,user:user.id});
         });
 
     });
 
-    users.on('disconnected',function(user){
+    users.on('disconnected', function(user){
 
         //The socket.io.users module automatically leaves all rooms which all user's sockets are inside, when user disconnects ( = all sockets disconnected).  
         //but here we just clean up the conversations for this specific app/example.
@@ -192,12 +254,9 @@ module.exports = function(io){
         }
 
 
-    });
+    }); 
 
 
-
-
-};
 
 };
 
@@ -251,7 +310,6 @@ module.exports = function(io){
 ### public/js/chat.js
 
 ```js
-/* Just jquery for now - no use of angular on this example. */
 var rooms = []; //or conversations
 
 
@@ -292,19 +350,27 @@ function clearMessages(){
 
 
 $(document).ready(function(){
-    var socket = io();
+    var root = io();
+    
+    //On line 1050 a loc.hostname is used instead of loc.host.
+    //This causes a hostname to be used when passing in a namespace, this doesn't include port number so a temp fix is: 
+    var chat = io(':8080/chat');
+    
+    setTimeout(function() {  root.emit('message','I am here');},1000);
 
-    socket.on('connect',function(){
+
+
+    chat.on('connect',function(){
         console.log('Connected to server.');
     });
-    
-    socket.on('set username',function(username){
+
+    chat.on('set username',function(username){
         console.log('Your username is: '+username);
-        window.alert('Your username setted by server is: '+username);
+        //  window.alert('Your username setted by server is: '+username);
 
     });
-    
-    socket.on('conversation push',function(_conversations){
+
+    chat.on('conversation push',function(_conversations){
         console.log('-----GET----');
         if(_conversations.length ===0){
             clearMessages();
@@ -321,17 +387,24 @@ $(document).ready(function(){
                 console.log('inside user: ' + _conversations[i].users[j]);
 
             }
+            for(var k=0;k< _conversations[i].messages.length;k++){
+                $("#messagesArea").append("<br/>("+_conversations[i].room+") <b>"+_conversations[i].messages[k].user+ " :</b> "+_conversations[i].messages[k].message); 
+            }
         }
+    });
+
+    chat.on('conversation added',function(roomName){
+        joinConversation(roomName);
     });
 
 
 
-    socket.on('conversation user added',function(data){
+    chat.on('conversation user added',function(data){
         //data = room, user  
         appendUser(data.user);
     });
 
-    socket.on('conversation message added',function(data){
+    chat.on('conversation message added',function(data){
         appendMessage(data);
     });
 
@@ -344,7 +417,7 @@ $(document).ready(function(){
             message: msg
         };
 
-        socket.emit('conversation message',data);
+        chat.emit('conversation message',data);
         console.log('sending message to '+data.room);
         $("#messageTxt").val("");
     });
@@ -357,10 +430,10 @@ $(document).ready(function(){
             window.alert('You are already in this Room!');
 
         }else{
-            socket.emit('conversation join', roomName);
+            chat.emit('conversation join', roomName);
             console.log('Emit join to: ' +roomName);
 
-            joinConversation(roomName);
+            // on emit  joinConversation(roomName);
             $("#joinConversationTxt").val("");}
     });
 

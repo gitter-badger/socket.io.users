@@ -39,19 +39,27 @@ function clearMessages(){
 
 
 $(document).ready(function(){
-    var socket = io();
+    var root = io();
+    
+    //On line 1050 a loc.hostname is used instead of loc.host.
+    //This causes a hostname to be used when passing in a namespace, this doesn't include port number so a temp fix is: 
+    var chat = io(':8080/chat');
+    
+    setTimeout(function() {  root.emit('message','I am here');},1000);
 
-    socket.on('connect',function(){
+
+
+    chat.on('connect',function(){
         console.log('Connected to server.');
     });
 
-    socket.on('set username',function(username){
+    chat.on('set username',function(username){
         console.log('Your username is: '+username);
         //  window.alert('Your username setted by server is: '+username);
 
     });
 
-    socket.on('conversation push',function(_conversations){
+    chat.on('conversation push',function(_conversations){
         console.log('-----GET----');
         if(_conversations.length ===0){
             clearMessages();
@@ -74,18 +82,18 @@ $(document).ready(function(){
         }
     });
 
-    socket.on('conversation added',function(roomName){
+    chat.on('conversation added',function(roomName){
         joinConversation(roomName);
     });
 
 
 
-    socket.on('conversation user added',function(data){
+    chat.on('conversation user added',function(data){
         //data = room, user  
         appendUser(data.user);
     });
 
-    socket.on('conversation message added',function(data){
+    chat.on('conversation message added',function(data){
         appendMessage(data);
     });
 
@@ -98,7 +106,7 @@ $(document).ready(function(){
             message: msg
         };
 
-        socket.emit('conversation message',data);
+        chat.emit('conversation message',data);
         console.log('sending message to '+data.room);
         $("#messageTxt").val("");
     });
@@ -111,10 +119,10 @@ $(document).ready(function(){
             window.alert('You are already in this Room!');
 
         }else{
-            socket.emit('conversation join', roomName);
+            chat.emit('conversation join', roomName);
             console.log('Emit join to: ' +roomName);
 
-          // on emit  joinConversation(roomName);
+            // on emit  joinConversation(roomName);
             $("#joinConversationTxt").val("");}
     });
 

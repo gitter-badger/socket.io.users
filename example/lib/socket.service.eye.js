@@ -1,7 +1,8 @@
-var users = require('./../../index').Users; //IMPORTANT
+var users = require('./../../index').Users.of('/eye'); //IMPORTANT
 
 module.exports = function(io){
 
+    this.name = 'eye';
     var eyes = [];
     var addEye = function(eye){
         var exists=false;
@@ -27,11 +28,13 @@ module.exports = function(io){
         }
     };
 
-    users.on('connected',function(user){
-        console.log('A user has connected to EYE.'); 
+
+    users.on('connected', function(user){
+        console.log('A user has ('+user.id+') connected to EYE.'); 
     });
 
-    users.on('connection',function(user){
+    users.on('connection', function(user){
+        console.log('push eyes');
         io.to(user.socket.id).emit('push eyes',eyes);
         user.socket.on('article read',function (eye){
             eye.id = user.id;
@@ -43,8 +46,5 @@ module.exports = function(io){
         }); 
     });
 
-    users.on('disconnected',function(user){
-        console.log('A user has been disconnected from EYE.'); 
-    });
-
 };
+
