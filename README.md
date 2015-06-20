@@ -16,12 +16,13 @@ $ npm install socket.io.users
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
+var socketUsers = require('socket.io.users');
 
 socketUsers.Session(app);//IMPORTANT
 
 var rootIo = require('socket.io')(server); //default '/' as namespace.
 var chatIo = rootIo.of('/chat');
-var socketUsers = require('socket.io.users');
+
 
 var rootUsers = socketUsers.Users; /* default '/' as namespace. Each namespace has IT's OWN users object list, but the Id of a user of any other namespace may has the same value if request comes from the same client-machine-user. This makes easy to keep a kind of synchronization between all users of all different namespaces. */
 
