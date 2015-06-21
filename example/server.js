@@ -29,6 +29,7 @@ rootUsers.on('connection',function(user){
     });
 });
 
+
 var chat = io.of('/chat');
 chat.use(socketUsers.Middleware());//IMPORTANT 
 require('./lib/socket.service.chat')(chat); //A custom service for this example. look how easy is to manage your code with users and socket.io.users module

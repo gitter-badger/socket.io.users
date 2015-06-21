@@ -1,7 +1,7 @@
 {
   "name": "socket.io.users",
-  "version": "1.0.20",
-  "description": "This is a node js module for socket.io applications. One user per client. User means new tab, new browser window but same machine. This module finds and manages which socket is from who and visa versa. Make use of the middleware or the standalone server.",
+  "version": "1.0.23",
+  "description": "This module finds and manages which socket is from who and visa versa. One user per person. User means: Unlimited (new) browser tabs/windows but same machine. OR You can pass custom authorized id and have one user with it's sockets per group of different machines. ",
   "main": "index.js",
   "directories": {
      "example": "example"

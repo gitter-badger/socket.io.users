@@ -84,6 +84,7 @@ module.exports = function(){
         if(debug)
             console.log('A User ('+ user.id+') has connected.');
         user.store.username = 'user'+numName; // You can use user.store to store your own custom properties describes this user.
+        
         numName++;
     });
 
