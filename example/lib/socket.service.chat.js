@@ -10,6 +10,7 @@ module.exports = function(){
         io = arguments[0];   
     }else{
         console.error('You did not pass a parameter socket.io inside!');    
+        return;
     }
     //{room: 'room', users: ['xxx1','xxx2']};
     var conversations = [];
@@ -83,19 +84,20 @@ module.exports = function(){
     users.on('connected', function(user){
         if(debug)
             console.log('A User ('+ user.id+') has connected.');
-        user.store.username = 'user'+numName; // You can use user.store to store your own custom properties describes this user.
-        
+        user.set('username', 'user'+numName); // You can use user.store or user.set(property,value,callbackFunction) to store your own custom properties describes this user.
+
         numName++;
     });
 
     users.on('connection', function(user){
         console.log('chat service on connection');
+        //console.log('%s',user);
         var currentSocket = user.socket;
         var myConvs = getConversationsByUser(user.id);
-
+        
         setTimeout(function(){
             io.to(currentSocket.id).emit('conversation push',myConvs);
-            io.to(currentSocket.id).emit('set username',user.store.username);
+            io.to(currentSocket.id).emit('set username',user.get('username'));
             if(debug)
                 console.log('Push '+myConvs.length+' rooms to socket id: '+currentSocket.id);
         },300);
@@ -113,7 +115,13 @@ module.exports = function(){
                     console.log('Conversation join added '+ conversation.room + ' with users len: '+ conversation.users.length);
                 io.to(roomName).emit('conversation user added',{room: roomName,user: user.id});
             }
-            io.to(user.id).emit('conversation added',roomName);
+            
+            io.to(user).emit('conversation added',roomName);/*=io.to(user.id).
+            this line emits an event for all 
+            of this user's connected/opened sockets. 
+            Pushing the rooms on all opened browser tabs and 
+            even on different pc which user has logged in.*/
+            
         });
 
         currentSocket.on('conversation message',function(data){

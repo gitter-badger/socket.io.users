@@ -39,11 +39,12 @@ chatUsers.use(socketUsers.Middleware());
 
 chatUsers.on('connected',function(user){
     console.log(user.id + ' has connected to the CHAT');
-    user.store.username = 'username setted by server side'; //at the store property you can store any type of properties and objects you want to share between your user's sockets. 
+    user.set('username', 'username setted by server side'); /*at the store property you can store any type of properties 
+    and objects you want to share between your user's sockets. */
     user.socket.on('any event', function(data){ //user.socket is the current socket, to get all connected sockets from this user, use: user.sockets 
     
     });
-    chatIo.emit('set username',user.store.username);
+    chatIo.emit('set username',user.get('username')); //or user.store.username
 });
 
 rootUsers.on('connected',function(user){
@@ -207,8 +208,10 @@ module.exports = function(){
     users.on('connected', function(user){
         if(debug)
             console.log('A User ('+ user.id+') has connected.');
-        user.store.username = 'user'+numName; // You can use user.store to store your own custom properties describes this user.
-        numName++;
+            user.store.username = 'user'+numName; /* You can use user.store or 
+            user.set(propertyName,value,optionalCallback) 
+            to store your own custom properties describes this user. */
+            numName++;
     });
 
     users.on('connection', function(user){
@@ -236,7 +239,12 @@ module.exports = function(){
                     console.log('Conversation join added '+ conversation.room + ' with users len: '+ conversation.users.length);
                 io.to(roomName).emit('conversation user added',{room: roomName,user: user.id});
             }
-            io.to(user.id).emit('conversation added',roomName);
+            
+            io.to(user).emit('conversation added',roomName);/*=io.to(user.id).
+            this line emits an event for all 
+            of this user's connected/opened sockets. 
+            Pushing the rooms on all opened browser tabs and 
+            even on different pc which user has logged in.*/
         });
 
         currentSocket.on('conversation message',function(data){

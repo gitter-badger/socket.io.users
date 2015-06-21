@@ -12,7 +12,12 @@ app.engine('html',require('ejs').renderFile);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
-socketUsers.Session(app);//IMPORTANT
+var optionalSessionOptions = {secret: "socket.io.users.example",
+                              resave: true,
+                              saveUninitialized: true}; 
+
+socketUsers.Session(app);//IMPORTANT if you will use the default cookie-session-id to be your user(s)'s indentifer/authorizator or
+//socketUsers.Session(app,optionalSessionOptions) .  
 
 app.use(express.static(path.join(__dirname,'public')));
 
@@ -32,7 +37,7 @@ rootUsers.on('connection',function(user){
 
 var chat = io.of('/chat');
 chat.use(socketUsers.Middleware());//IMPORTANT 
-require('./lib/socket.service.chat')(chat); //A custom service for this example. look how easy is to manage your code with users and socket.io.users module
+require('./lib/socket.service.chat')(chat); //A custom service for this example. look how easy is to manage your code with socket.io.users module
 
 var eye  = io.of('/eye');
 eye.use(socketUsers.Middleware());
