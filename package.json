@@ -1,36 +1,36 @@
 {
-  "name": "socket.io.users",
-  "version": "1.0.25",
-  "description": "This module finds and manages which socket is from who and visa versa. One user per person. User means: Unlimited (new) browser tabs/windows but same machine. OR You can pass custom authorized id and have one user with it's sockets per group of different machines. ",
-  "main": "index.js",
-  "directories": {
-     "example": "example"
-  },
-  "dependencies": {
-    "socket.io": "^1.3.5",
-    "cookie-parser": "^1.3.5",
-    "express-session": "^1.11.3",
-	"debug": "~2.2.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kataras/socket.io.users.git"
-  },
-  "keywords": [
-    "socket.io",
-    "express",
-    "session",
-    "socket.io.users",
-    "socket-io-users"
-  ],
-  "author": "Makis Maropoulos <makis@ideopod.com> (https://github.com/kataras)",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/kataras/socket.io.users/issues"
-  },
-  "homepage": "https://github.com/kataras/socket.io.users#readme"
+    "name": "socket.io.users",
+    "version": "1.0.26",
+    "description": "This module finds and manages which socket is from who and visa versa. One user per person. User means: Unlimited (new) browser tabs/windows but same machine. OR You can pass custom authorized id and have one user with it's sockets per group of different machines. ",
+    "main": "index.js",
+    "directories": {
+        "example": "example"
+    },
+    "dependencies": {
+        "socket.io": "^1.3.5",
+        "cookie-parser": "^1.3.5",
+        "express-session": "^1.11.3",
+        "debug": "~2.2.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kataras/socket.io.users.git"
+    },
+    "keywords": [
+        "socket.io.users",
+        "socket.io",
+        "express",
+        "session",
+        "socket.io-users"
+    ],
+    "author": "Makis Maropoulos <makis@ideopod.com> (https://github.com/kataras)",
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://github.com/kataras/socket.io.users/issues"
+    },
+    "homepage": "https://github.com/kataras/socket.io.users#readme"
 }
