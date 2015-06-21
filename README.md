@@ -1,7 +1,7 @@
 # socket.io.users
 
 This is a node js module for socket.io applications. This module finds and manages which socket is from who and visa versa.
-One user per person. User means: Unlimited (new) browser tabs/windows but same machine. OR You can pass custom authorized id and have one user with it's sockets per group of different machines.
+One user per person. User means: Unlimited (new) browser tabs/windows but same machine. OR client can pass custom authorized id and have one user with it's sockets per group of different machines.
 Make use of the middleware or the standalone server.
 
 ## Installation
@@ -304,8 +304,9 @@ module.exports = function(){
         </div>
 
 
-        <script src="/socket.io/socket.io.js"></script> <!-- provided by socket.io module. -->
-         <script src="js/libs/jquery-2.1.4.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script> <!-- provided by socket.io module -->
+        <script src="js/libs/jquery-2.1.4.min.js"></script> <!-- need this for the example -->
+        <script src="js/libs/js.cookie.js"></script> <!-- need this for the example -->
         <script src="js/chat.js" ></script> <!-- custom script for this example -->
     </body>
 </html>
@@ -356,23 +357,36 @@ function clearMessages(){
 
 $(document).ready(function(){
     var root = io();
-    
+    var chat;
+
     //On line 1050 a loc.hostname is used instead of loc.host.
     //This causes a hostname to be used when passing in a namespace, this doesn't include port number so a temp fix is: 
-    var chat = io(':8080/chat');
+    var chatURI=':8080/chat'; 
     /* or
-    
+
      var myId = 'kataras'; // this can be asked by server too for authorization
      var chat = io(':8080/chat?id='+myId); 
-    
-     this means all sockets is one user with id=kataras rathen 
-     than the default which is session id, 
-     for real application you can also ask for username from client and after start 
-     the connection to io with same user and sockets from different machine-pcs too! 
-    
-    */
-    
-    setTimeout(function() {  root.emit('message','I am here');},1000);
+
+     this means all sockets is one user with id=kataras rathen than the default which is session id, you can ask for username from client and start 
+     connection to io with same user    and sockets from different machine-pcs too! 
+
+     Real web application example from above explaination: */ 
+    if(Cookies.get('id') !== undefined){
+        chatURI+='?id='+Cookies.get('id');
+    }else{
+        var explainStr = "You can pass same name if you want to test it between other machine. All same user's sockets will be synchronized!";
+        var person = prompt("Please enter your name", explainStr);
+
+        if (person !== null && person.length>0 && person!==explainStr) {
+            chatURI+='?id='+person; 
+            Cookies.set('id',person);
+            setTimeout(function() {  root.emit('message',person+' is here!');},1000);
+        }
+    }
+
+    chat = io(chatURI); 
+
+    /*End real web application example*/
 
 
 

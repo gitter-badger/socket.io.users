@@ -40,24 +40,36 @@ function clearMessages(){
 
 $(document).ready(function(){
     var root = io();
-    
+    var chat;
+
     //On line 1050 a loc.hostname is used instead of loc.host.
     //This causes a hostname to be used when passing in a namespace, this doesn't include port number so a temp fix is: 
-   
-    var chat = io(':8080/chat'); 
+    var chatURI=':8080/chat'; 
     /* or
-    
+
      var myId = 'kataras'; // this can be asked by server too for authorization
      var chat = io(':8080/chat?id='+myId); 
-    
+
      this means all sockets is one user with id=kataras rathen than the default which is session id, you can ask for username from client and start 
      connection to io with same user    and sockets from different machine-pcs too! 
-    
-    */
-    
-    setTimeout(function() {  root.emit('message','I am here');},1000);
 
+     Real web application example from above explaination: */ 
+    if(Cookies.get('id') !== undefined){
+        chatURI+='?id='+Cookies.get('id');
+    }else{
+        var explainStr = "You can pass same name if you want to test it between other machine. All same user's sockets will be synchronized!";
+        var person = prompt("Please enter your name", explainStr);
 
+        if (person !== null && person.length>0 && person!==explainStr) {
+            chatURI+='?id='+person; 
+            Cookies.set('id',person);
+            setTimeout(function() {  root.emit('message',person+' is here!');},1000);
+        }
+    }
+
+    chat = io(chatURI); 
+
+    /*End real web application example*/
 
     chat.on('connect',function(){
         console.log('Connected to server.');
