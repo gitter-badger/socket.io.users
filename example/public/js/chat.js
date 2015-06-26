@@ -38,6 +38,22 @@ function clearMessages(){
 
 
 
+function getUserFromApi(usernameFromprompt){
+    var def = jQuery.Deferred();
+    $.post('api/users',{username: usernameFromprompt},function(userObj){
+        if(userObj.error){
+            def.reject(userObj.error);
+        }else{
+            def.resolve(userObj);
+        }
+    });
+
+    return def;
+}
+
+
+
+
 $(document).ready(function(){
     var root = io();
     var chat;
@@ -56,69 +72,84 @@ $(document).ready(function(){
      Real web application example from above explaination: */ 
     if(Cookies.get('id') !== undefined){
         chatURI+='?id='+Cookies.get('id');
+        chat = io(chatURI); 
+        startListeningToChat();
     }else{
         var explainStr = "You can pass same name if you want to test it between other machine. All same user's sockets will be synchronized!";
         var person = prompt("Please enter your name", explainStr);
 
         if (person !== null && person.length>0 && person!==explainStr) {
-            chatURI+='?id='+person; 
-            Cookies.set('id',person);
-            setTimeout(function() {  root.emit('message',person+' is here!');},1000);
+
+            getUserFromApi(person).then(function(userReturned){
+                chatURI+='?id='+userReturned.id; 
+                Cookies.set('id',userReturned.id);
+                console.log(userReturned);
+                chat = io(chatURI); 
+                startListeningToChat();
+                setTimeout(function() {  root.emit('message',userReturned.username+' is here!');},1000);
+            }, function(errMsg){
+                alert(errMsg);   
+            });
+
+
         }
     }
 
-    chat = io(chatURI); 
+
 
     /*End real web application example*/
+    function startListeningToChat(){
 
-    chat.on('connect',function(){
-        console.log('Connected to server.');
-    });
 
-    chat.on('set username',function(username){
-        console.log('Your username is: '+username);
-        //  window.alert('Your username setted by server is: '+username);
 
-    });
+        chat.on('connect',function(){
+            console.log('Connected to server.');
+        });
 
-    chat.on('conversation push',function(_conversations){
-        console.log('-----GET----');
-        if(_conversations.length ===0){
-            clearMessages();
-            clearConversations();
-            clearUsers();
-            console.log('clear conversations');
-        }
-        console.log('Received ' + _conversations.length+ ' conversations ');
-        for(var i=0;i< _conversations.length;i++){
-            joinConversation(_conversations[i].room);
-            console.log('join to '+ _conversations[i].room);
-            for(var j=0; j < _conversations[i].users.length; j++){
-                appendUser(_conversations[i].users[j]);
-                console.log('inside user: ' + _conversations[i].users[j]);
+        chat.on('set username',function(username){
+            console.log('Your username is: '+username);
+            //  window.alert('Your username setted by server is: '+username);
 
+        });
+
+        chat.on('conversation push',function(_conversations){
+            console.log('-----GET----');
+            if(_conversations.length ===0){
+                clearMessages();
+                clearConversations();
+                clearUsers();
+                console.log('clear conversations');
             }
-            for(var k=0;k< _conversations[i].messages.length;k++){
-                $("#messagesArea").append("<br/>("+_conversations[i].room+") <b>"+_conversations[i].messages[k].user+ " :</b> "+_conversations[i].messages[k].message); 
+            console.log('Received ' + _conversations.length+ ' conversations ');
+            for(var i=0;i< _conversations.length;i++){
+                joinConversation(_conversations[i].room);
+                console.log('join to '+ _conversations[i].room);
+                for(var j=0; j < _conversations[i].users.length; j++){
+                    appendUser(_conversations[i].users[j]);
+                    console.log('inside user: ' + _conversations[i].users[j]);
+
+                }
+                for(var k=0;k< _conversations[i].messages.length;k++){
+                    $("#messagesArea").append("<br/>("+_conversations[i].room+") <b>"+_conversations[i].messages[k].user+ " :</b> "+_conversations[i].messages[k].message); 
+                }
             }
-        }
-    });
+        });
 
-    chat.on('conversation added',function(roomName){
-        joinConversation(roomName);
-    });
-
+        chat.on('conversation added',function(roomName){
+            joinConversation(roomName);
+        });
 
 
-    chat.on('conversation user added',function(data){
-        //data = room, user  
-        appendUser(data.user);
-    });
 
-    chat.on('conversation message added',function(data){
-        appendMessage(data);
-    });
+        chat.on('conversation user added',function(data){
+            //data = room, user  
+            appendUser(data.user);
+        });
 
+        chat.on('conversation message added',function(data){
+            appendMessage(data);
+        });
+    };
 
     $("#sendMessageBtn").click(function(){
         var msg = $("#messageTxt").val();

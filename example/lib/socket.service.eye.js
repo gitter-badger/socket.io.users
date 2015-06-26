@@ -14,7 +14,7 @@ module.exports = function(io){
 
         }
         if(exists===false){
-            eyes.push(eye);   
+            eyes.push(eye);
         }
         return !exists;
     };
@@ -30,7 +30,7 @@ module.exports = function(io){
 
 
     users.on('connected', function(user){
-        console.log('A user has ('+user.id+') connected to EYE.'); 
+        console.log('A user has ('+user.id+') connected to EYE.');
     });
 
     users.on('connection', function(user){
@@ -39,12 +39,11 @@ module.exports = function(io){
         user.socket.on('article read',function (eye){
             eye.id = user.id;
             if(addEye(eye)){
-                io.emit('eye added',eye); 
+                io.emit('eye added',eye);
                 io.to(user.id).emit('eye added',{id: 'Myself',article: 'You have seen an article', town: 'Server'});
 
             }
-        }); 
+        });
     });
 
 };
-

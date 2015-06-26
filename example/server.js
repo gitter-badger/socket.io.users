@@ -25,6 +25,28 @@ app.get('/',function(req,res){
     res.render('index.html');
 });
 
+var userLocalFactory = [
+    {id : 1, username : 'makis', password:'encryptedmakispassword', someotherPropety:'extra'},
+    {id : 2, username : 'george', password:'encryptedgeorgepassword', someotherPropety:'extra'},
+    {id : 3, username : 'kataras', password:'encryptedkataraspassword' ,someotherPropety:'extra'},
+    {id : 4, username : 'argi', password:'encryptedargipassword' ,someotherPropety:'extra'}
+];
+
+app.post('/api/users',function(req,res){
+    var username = req.body.username;
+
+    var userObject = {error: 'Wrong username.'};
+    for(i=0;i<userLocalFactory.length;i++){
+        var _user = userLocalFactory[i];
+        if(_user.username == username){
+            userObject = _user;
+            break;
+        }
+    }
+
+    res.json(userObject);
+});
+
 io.use(socketUsers.Middleware());
 
 var rootUsers = socketUsers.Users; //or socketUsers.Users.of('/');
