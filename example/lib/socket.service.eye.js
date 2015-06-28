@@ -33,6 +33,7 @@ module.exports = function(io){
         console.log('A user has ('+user.id+') connected to EYE.');
     });
 
+
     users.on('connection', function(user){
         console.log('push eyes');
         io.to(user.socket.id).emit('push eyes',eyes);

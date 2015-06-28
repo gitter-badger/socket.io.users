@@ -98,8 +98,12 @@ module.exports = function() {
   });
 
   users.on('conversation join', function(user, roomName) { //first parameter is ALWAYS the user, after are any all arguments you declared on the cleint side.
-    console.log('CALLED the first event for conversation join with userID: ' + user.id + ' room: ' + roomName + 'socket emmiter id:  '+user.socket.id);
+    console.log('CALLED the first event for conversation join with userID: ' + user.id + ' room: ' + roomName + ' socket emmiter id:  ' + user.socket.id);
   });
+
+
+
+
 
 
   users.on('connection', function(user) {
