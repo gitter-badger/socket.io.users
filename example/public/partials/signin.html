@@ -1,0 +1,14 @@
+<form class="form-signin" ng-controller="SigninController">
+  <h2 class="form-signin-heading">Please sign in</h2>
+  <label class="sr-only" for="inputEmail">Email address</label>
+  <input autofocus class="form-control" id="inputEmail" ng-model="username" placeholder="Username" required type="text">
+  <label class="sr-only" for="inputPassword">Password</label>
+  <input class="form-control" id="inputPassword" ng-model="password" placeholder="Password" required type="password">
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" value="remember-me">
+      Remember me
+    </label>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" ng-click="signin()" type="button">Sign in</button>
+</form>

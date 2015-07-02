@@ -2,9 +2,9 @@
 <!--
 ⟡ ◦ ◌°
 ◦° ◌ ◯ ◦ ⟡
-socket.io.users "Example" from Makis Maropoulos.
+Textme.io "Beta" from Makis Maropoulos.
 
-Start looking at my code but write some too! ^_^
+Stop looking at my code and write some ^_^
 http://facebook.com/makisjava
 
 ╭──────────────────────────────────────────╮
@@ -23,51 +23,49 @@ http://facebook.com/makisjava
 
 -->
 <html lang="el" xml:lang="el">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta http-equiv="Content-Language" content="el" />
-        <title>Socket.io.users example #1</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css">
 
-    </head>
-    <body>
-        <div class="container">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Language" content="el" />
+  <title>TextMe.IO</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/signin.css">
+  <link rel="stylesheet" href="css/chat.css">
+  <base href="/">
+  <meta name="author" content="{{author}}" />
+</head>
 
-            <div id="conversationsArea" style="width:300px;height:50px;">
+<body ng-app="textme" ng-controller="MainController">
 
-            </div> <input type="text" id="joinConversationTxt" placeholder="type a room to join"/><button type="button" class="btn btn-sm btn-danger" id="joinConversationBtn" >Join</button>  <br/>
-            Users inside conversations:
-            <div id="usersArea" style="width:500px;height:50px;">
+  <div class="container-fluid">
 
-            </div>
-            <hr/>
-
-            <br/>
-
-            <div id="messagesArea" style="width:500px;height:500px;">
-
-            </div>
-
-            <br/>
-
-            <input type="text" id="messageTxt" placeholder="message to send" />
-
-            <button type="button" id="sendMessageBtn" class="btn btn-sm btn-primary">Send message</button>
-
-        </div>
+    <div ng-view></div>
 
 
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="js/libs/jquery-2.1.4.min.js"></script>
-        <script src="js/libs/js.cookie.js" ></script>
-        <script src="js/libs/bootstrap.min.js"></script>
-        <script src="js/libs/angular.min.js"></script>
-        <script src="js/libs/angular-cookies.min.js"></script>
-        <script src="js/libs/angular-route.min.js" ></script>
-        <script src="js/libs/angular-ui-router.min.js" ></script>
-        <script src="js/libs/angular-resource.min.js" ></script>
-        <script src="js/custom_prototypes.js" ></script>
-        <script src="js/chat.js" ></script>
-    </body>
+  </div>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/libs/jquery-2.1.4.min.js"></script>
+  <script src="js/libs/moment.min.js"></script>
+  <script src="js/libs/livestamp.min.js"></script>
+  <script src="js/libs/bootstrap.min.js"></script>
+  <script src="js/libs/angular.min.js"></script>
+  <script src="js/libs/angular-cookies.min.js"></script>
+  <script src="js/libs/angular-route.min.js"></script>
+  <script src="js/libs/angular-ui-router.min.js"></script>
+  <script src="js/libs/angular-resource.min.js"></script>
+  <script src="js/string-prototypes.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/textme.js"></script>
+  <script src="js/services/socket.js"></script>
+  <script src="js/services/user-service.js"></script>
+  <script src="js/services/chat-service.js"></script>
+  <script src="js/controllers/main-controller.js"></script>
+  <script src="js/controllers/signin-controller.js"></script>
+  <script src="js/controllers/chat-controller.js"></script>
+</body>
+
 </html>

@@ -1,0 +1,95 @@
+<div id="wrapper" ng-controller="ChatController">
+
+<!-- Sidebar -->
+
+  <div id="sidebar-wrapper">
+    <ul class="sidebar-nav nav nav-tabs nav-stacked" role="tablist">
+      <li class="sidebar-brand">
+        <a href="#">
+          {{me.username}}
+        </a>
+      </li>
+      <li>
+        <form class="form form-horizontal">
+          <input class="form-control" ng-model="newRoomName" placeholder="Write here a name" type="text"/>
+          <button class="form-control" ng-click="createRoom(newRoomName)" type="button"><span class="glyphicon glyphicon-plus"/></button>
+        </form>
+      </li>
+      <li ng-repeat="roomName in roomNames" role="presentation">
+<!-- edw mono otan kanei join na kanei sync to room kai na to dixnei ( argotera) title="room.users.length" -->
+        <button aria-controls="{{roomName}}" data-toggle="tab" ng-click="joinRoom(roomName)" role="tab">
+          {{roomName}}
+        </button>
+      </li>
+    </ul>
+  </div>
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <ul class="nav-tabs nav" role="tablist">
+          <li ng-repeat="room in rooms" role="presentation">
+            <a aria-controls="{{room.name}}" data-toggle="tab" href="#{{room.name}}" role="tab">
+              {{room.name}}
+            </a>
+          </li>
+        </ul>
+        <div class="col-lg-12">
+          <div class="tab-content">
+            <div class="tab-pane" id="{{room.name}}" ng-repeat="room in rooms" role="tabpanel">
+              <div style="overflow-y:auto;max-height:800px">
+                <div class="message" ng-repeat="message in room.messages">
+                  <span data-livestamp="{{message.time}}">
+                    λίγα δευτερόλεπτα πριν</span>
+                  <h2>
+                    {{message.sender.username}}</h2>
+                  <h3>
+                    {{message.content}}</h3>
+                </div>
+                <br/>
+
+                <a class="btn btn-default" href="#menu-toggle" id="menu-toggle">
+                  {{room.name}}</a>
+              </div>
+
+              <div style="float:right;">
+                <div ng-repeat="user in room.users">
+                  <span style="color:red;">
+                    {{user.username}}
+                  </span>
+                </div>
+              </div>
+              <div style="position: fixed; bottom:25px; right: 20px;width:100% ">
+                <div class="chat-footer">
+                  <input ng-keypress="newMessageInputKeyPressed($event,room)" ng-model="room.newMessage" style="width:95%;" type="text"/>
+                  <button id="sendMessageBtn" ng-click="sendMessage(room)" type="button">
+                    ΟΚ</button>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<!-- /#page-content-wrapper -->
+
+</div>
+
+<!-- Menu Toggle Script -->
+<script>
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+
+    $("#wrapper").toggleClass("toggled");
+    $(".chat-footer").toggleClass("toggled");
+  });
+</script>

@@ -3,6 +3,6 @@ String.prototype.endsWith = function(suffix) {
 };
 
 String.prototype.replaceAll = function (replaceThis, withThis) {
-    var re = new RegExp(replaceThis,"g"); 
+    var re = new RegExp(replaceThis,"g");
     return this.replace(re, withThis);
 };

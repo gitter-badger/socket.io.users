@@ -1,0 +1,10 @@
+html,body {
+  margin:0 !important;
+  padding:0 !important;
+  height:100% !important;
+}
+
+.container-fluid {
+    height: 100% !important;
+    overflow-y: hidden; /* don't show content that exceeds my height */
+}

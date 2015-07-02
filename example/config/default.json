@@ -1,0 +1,11 @@
+{
+  "Server": {
+    "port": 80,
+    "domain" : "socket.io.users domain"
+  },
+  "Session": {
+    "secret": "socket.io.users secret",
+    "resave": true,
+    "saveUninitialized": true
+  }
+}
