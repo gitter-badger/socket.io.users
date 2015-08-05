@@ -9,9 +9,11 @@ Make use of the middleware.
 ```sh
 $ npm install socket.io.users
 ```
-
 [NPM] https://www.npmjs.com/package/socket.io.users
 
+## Live Example (Greek language)
+
+[Absolute link]http://chat.ideopod.com
 ## Usage
 
 ```js
