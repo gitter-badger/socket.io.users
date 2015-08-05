@@ -13,7 +13,7 @@ $ npm install socket.io.users
 
 ## Live Example (Greek language)
 
-[Absolute link]http://chat.ideopod.com
+Go to http://chat.ideopod.com
 ## Usage
 
 ```js
