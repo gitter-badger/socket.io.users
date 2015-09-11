@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "target": "es5",
+    "noEmit": false,
+    "noEmitOnError": true,
+    "experimentalDecorators": false,
+    "outDir": "./compiled",
+    "charset": "UTF-8",
+    "noLib": true,
+    "diagnostics": true,
+    "declaration": false
+  },
+  "files": [
+    "./src/lib.d.ts",
+    "./src/index.ts",
+    "./src/lib/User.ts",
+    "./src/lib/Users.ts",
+    "./src/lib/Middleware.ts",
+    "./src/lib/Namespaces.ts",
+    "./src/lib/Session.ts"
+  ],
+  "exclude": [
+    "./src/typings"
+  ]
+}

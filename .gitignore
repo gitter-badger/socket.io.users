@@ -1,5 +1,14 @@
 node_modules
-/example/node_modules
-tests
+examples_javascript/node_modules
+examples_typescript/node_modules
+.vs/*
+.vscode
 .git
 .settings
+zip_releases
+bin
+v1.src
+
+
+
+
