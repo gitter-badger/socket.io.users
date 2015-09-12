@@ -1,13 +1,10 @@
-"use strict";
-
-var Middleware = require('./lib/socket.middleware'),
-    Session = require('./lib/socket.session'),
-    User = require('./lib/socket.user'),
-    Namespaces = require('./lib/socket.namespaces'),
-    Users = require('./lib/socket.users');
-
-module.exports.Middleware = Middleware;
-module.exports.Session = Session;
-module.exports.User = User;
-module.exports.Namespaces = Namespaces;
-module.exports.Users = Users;
+var Middleware_1 = require("./lib/Middleware");
+var Session_1 = require("./lib/Session");
+var User_1 = require("./lib/User");
+var Namespaces_1 = require("./lib/Namespaces");
+var Users_1 = require("./lib/Users");
+module.exports.Middleware = Middleware_1.default;
+module.exports.Session = Session_1.default;
+module.exports.User = User_1.default;
+module.exports.Namespaces = Namespaces_1.default;
+module.exports.Users = Users_1.default.of("/");

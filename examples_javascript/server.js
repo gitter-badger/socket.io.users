@@ -1,4 +1,4 @@
-/// <reference path="node_modules/socket.io.users/compiled/typings/socket.io.users/socket.io.users.d.ts" />
+///// <reference path="node_modules/socket.io.users/compiled/typings/socket.io.users/socket.io.users.d.ts" />
 var express = require('express');
 var app = express();
 var httpServer = require('http').createServer(app);

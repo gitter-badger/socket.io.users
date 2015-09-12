@@ -170,6 +170,7 @@ declare module NodeJS {
         removeAllListeners(event?: string): EventEmitter;
         setMaxListeners(n: number): void;
         listeners(event: string): Function[];
+        _events:string[]; // by default node doesn't have this in def types, but some times we need this.
         emit(event: string, ...args: any[]): boolean;
     }
 
@@ -409,6 +410,7 @@ declare module "querystring" {
 declare module "events" {
     export class EventEmitter implements NodeJS.EventEmitter {
         static listenerCount(emitter: EventEmitter, event: string): number;
+
         addListener(event: string, listener: Function): EventEmitter;
         on(event: string, listener: Function): EventEmitter;
         once(event: string, listener: Function): EventEmitter;
@@ -416,7 +418,6 @@ declare module "events" {
         removeAllListeners(event?: string): EventEmitter;
         setMaxListeners(n: number): void;
         listeners(event: string): Function[];
-        _events:string[]; //EDIT BY ME doesn't have by default, I add this because I need direct access to events.
         emit(event: string, ...args: any[]): boolean;
    }
 }

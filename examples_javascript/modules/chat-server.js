@@ -1,3 +1,5 @@
+/// <reference path="../node_modules/socket.io.users/compiled/typings/socket.io/socket.io.d.ts" />
+/// <reference path="../node_modules/socket.io.users/compiled/typings/socket.io.users/socket.io.users.d.ts" />
 "use strict";
 var users = require('socket.io.users').Users;
 var factory = require('../database/user-factory');
@@ -35,6 +37,7 @@ module.exports = function (io) {
   };
 
   function setUsername(user, username, fn) {
+
     user.set('username', factory.getUser(username).username);
     console.log("user logged in with username: " + user.get("username"));
     //user.join(rooms[0].name);

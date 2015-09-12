@@ -8,4 +8,4 @@ module.exports.Middleware = Middleware;
 module.exports.Session = Session;
 module.exports.User = User;
 module.exports.Namespaces = Namespaces;
-module.exports.Users = new Users();
+module.exports.Users = Users.of("/");

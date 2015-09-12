@@ -1,6 +1,6 @@
 import Users from "./Users";
 
-var Middleware = () => {
+function Middleware() {
 	return (socket: SocketIO.Socket, next: () => any) => {
 		let users = Users.of(socket.nsp.name);
 		//if (users.namespace === socket.nsp.name) {

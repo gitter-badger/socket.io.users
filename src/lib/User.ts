@@ -105,7 +105,7 @@ class User {
   }
 
   belong(...rooms: string[]): boolean {
-    return this.in.apply(this,rooms);
+    return this.in.apply(this, rooms);
   }
 
   set(key: string, value: any, callback: () => void): void { //property,value,callback(callback is unnessecary for now)
@@ -138,8 +138,8 @@ class User {
 
 
   to(room: string): SocketIO.Socket {
-    this.socket.rooms = this.socket.rooms || [];
-    if (!~this.socket.rooms.indexOf(room)) this.socket.rooms.push(room);
+    this.socket._rooms = this.socket._rooms || [];
+    if (!~this.socket._rooms.indexOf(room)) this.socket._rooms.push(room);
     return this.socket; //this happens because of THIS socket.emit. this function sends to all sockets inside this room data EXCEPT THIS.SOCKET.ID (look on socket.io.socket.js on emit = ).
   }
 }
