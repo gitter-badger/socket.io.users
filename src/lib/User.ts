@@ -105,7 +105,7 @@ class User {
   }
 
   belong(...rooms: string[]): boolean {
-    return this.in(rooms.toString());
+    return this.in.apply(this,rooms);
   }
 
   set(key: string, value: any, callback: () => void): void { //property,value,callback(callback is unnessecary for now)

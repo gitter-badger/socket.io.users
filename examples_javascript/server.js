@@ -1,3 +1,4 @@
+/// <reference path="node_modules/socket.io.users/compiled/typings/socket.io.users/socket.io.users.d.ts" />
 var express = require('express');
 var app = express();
 var httpServer = require('http').createServer(app);
@@ -18,7 +19,11 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-socketUsers.Session(app, config.get('Session'));
+socketUsers.Session(app,{
+    "secret": "socket.io.users secret",
+    "resave": true,
+    "saveUninitialized": true
+  });
 
 //app.use(require('prerender-node').set('prerenderServiceUrl', 'http://service.prerender.io/').set('prerenderToken', 'yqzEnhIVldxGR95v2V1s'));  //otan to aenvasw na dw an doulevei prepei na pros9esw add url sto prerender.io
 
@@ -31,7 +36,7 @@ app.use("/", routes);
 io.use(socketUsers.Middleware());
 var chatServer = require('./modules/chat-server')(io);
 
-var httpPort = config.get('Server.port');
+var httpPort = 80;// config.get('Server.port');
 httpServer.listen(httpPort, function() {
   console.log("Server is running on " + httpPort);
 });

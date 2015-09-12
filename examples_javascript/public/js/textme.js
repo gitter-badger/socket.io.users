@@ -17,7 +17,7 @@ function config($routeProvider, $locationProvider) {
                   ChatService.me = data.user;
                   ChatService.roomNames = data.roomNames;
                   ChatService.rooms = data.rooms;
-                  console.log('setting chatserver me and room names');
+                  console.log('setting chatserver me and room names,len of rooms: '+ChatService.rooms.length);
                   defer.resolve();
                 });
               });

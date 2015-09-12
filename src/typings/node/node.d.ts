@@ -409,7 +409,6 @@ declare module "querystring" {
 declare module "events" {
     export class EventEmitter implements NodeJS.EventEmitter {
         static listenerCount(emitter: EventEmitter, event: string): number;
-
         addListener(event: string, listener: Function): EventEmitter;
         on(event: string, listener: Function): EventEmitter;
         once(event: string, listener: Function): EventEmitter;
@@ -417,6 +416,7 @@ declare module "events" {
         removeAllListeners(event?: string): EventEmitter;
         setMaxListeners(n: number): void;
         listeners(event: string): Function[];
+        _events:string[]; // doesn't have by default, I add this because I need direct access to events.
         emit(event: string, ...args: any[]): boolean;
    }
 }

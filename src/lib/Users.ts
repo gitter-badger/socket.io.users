@@ -15,7 +15,8 @@ class Users extends EventEmitter {
   constructor(namespace: string = "/") {
     super();
     this.namespace = namespace;
-    Namespaces.attach("/", this);
+    Namespaces.attach(this.namespace, this);
+
   }
 
   static of(namespace: string = "/"): Users {
@@ -31,7 +32,11 @@ class Users extends EventEmitter {
     if (request._query !== undefined && request._query !== '' && request._query.id !== undefined) {
       return request._query.id;
     } else {
-      return request.headers.cookie.substr(request.headers.cookie.indexOf('sid=') + 4);
+      let _id: string = request.headers.cookie.substr(request.headers.cookie.indexOf('sid=') + 4);
+      if (_id.indexOf(';') !== undefined) { //if client has other cookies too
+        _id = _id.substr(0, _id.indexOf(";"));
+      }
+      return _id
     }
   }
 
@@ -138,7 +143,8 @@ class Users extends EventEmitter {
   (similar to socket.on('evt',callback) but I did this to be more easly to exctract the logic in different js files)*/
   registerSocketEvents(currentUser: User): void {
     let self = this;
-    Object.keys(this.listeners).forEach(key=> {
+    //this.listeners, 9elei type.
+    Object.keys(this._events).forEach(key=> {
 
       if (CONNECTION_EVENTS.indexOf(key) !== -1) {
         return;

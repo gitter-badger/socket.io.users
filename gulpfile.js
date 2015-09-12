@@ -11,14 +11,14 @@ var tsProject = typescript.createProject("tsconfig.json"); //use of tscofnig for
 
 
 gulp.task("compile", function () { //compile to compiled folder
-	return gulp.src(["src/**/*.ts", "src/**/**/*.ts"]) //lib, and lib/queries. //except lib.d.ts. Maybe for future use:  { base: './src/' }
+	return gulp.src(["src/**/*.ts", "src/**/**/*.ts"]) //lib, //except lib.d.ts. Maybe for future use:  { base: './src/' }
 		.pipe(typescript(tsProject))
 		.pipe(gulp.dest("./compiled/"));
 });
 
 gulp.task("src", function () { // compile and copy to examples and compiled folder
 
-	return gulp.src(["src/**/*.ts", "src/**/**/*.ts"]) //lib, and lib/queries. //except lib.d.ts. Maybe for future use:  { base: './src/' }
+	return gulp.src(["src/**/*.ts", "src/**/**/*.ts"]) //lib //except lib.d.ts. Maybe for future use:  { base: './src/' }
 		.pipe(typescript(tsProject))
 		.pipe(gulp.dest("./compiled/"))
 		.pipe(gulp.dest("./examples_javascript/node_modules/socket.io.users/compiled/"))

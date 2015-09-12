@@ -1,16 +1,16 @@
 "use strict";
 var users = require('socket.io.users').Users;
 var factory = require('../database/user-factory');
-module.exports = function(io) {
+module.exports = function (io) {
 
   var rooms = [{
     name: 'global',
     users: [],
     messages: [] //auto einai mono gia to client side ( sto messages list)
-  //  newMessage:'', //auto einai mono gia to client side ( sto msg input)
+    //  newMessage:'', //auto einai mono gia to client side ( sto msg input)
   }]; // name:'',users:[],//den 9a kratiounte messages prostoparwnmessages[]
 
-  var getRoom = function(roomName) {
+  var getRoom = function (roomName) {
     for (var i = 0; i < rooms.length; i++) {
       var _room = rooms[i];
       if (_room.name === roomName) {
@@ -20,7 +20,7 @@ module.exports = function(io) {
     return undefined;
   };
 
-  var getUserIn = function(userStore) {
+  var getUserIn = function (userStore) {
     var roomsJoinedUser = [];
     for (var i = 0; i < rooms.length; i++) {
       var _users = rooms[i].users;
@@ -36,9 +36,10 @@ module.exports = function(io) {
 
   function setUsername(user, username, fn) {
     user.set('username', factory.getUser(username).username);
+    console.log("user logged in with username: " + user.get("username"));
     //user.join(rooms[0].name);
     //mazi tou stelnoume kai ta rooms
-    joinRoom(user,{
+    joinRoom(user, {
       roomName: rooms[0].name
     }); //join to global room.
     var roomNames = [];
@@ -82,8 +83,10 @@ module.exports = function(io) {
       content: data.message,
       time: new Date().toISOString()
     };
+
+
     user.to(data.roomName).emit('receive message', messageSent); //se olous sto room ektos apo auto edw to SOCKET
-    //  console.log(user.id+ 'sending message to '+data.roomName+ ' from '+sender);
+    console.log(sender.username + 'sending '+messageSent.content+' to ' + data.roomName);
 
     fn(messageSent);
   }
@@ -155,10 +158,12 @@ module.exports = function(io) {
     }
   }
 
+
+
   users.on('disconnected', userDisconnected);
   users.on('set username', setUsername);
   users.on('join room', joinRoom); //notify other = user joined room or (GLOBAL) room created.
   users.on('leave room', leaveRoom); //notify other = user left room or (GLOBAL) room removed.
   users.on("send message", sendMessage); //notify other = receive message.
-
+ 
 };

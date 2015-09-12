@@ -7,6 +7,12 @@
 /// <reference path="../express-session/express-session.d.ts" />
 /// <reference path="../socket.io/socket.io.d.ts" />
 
+//node events (typed) doesn't have _events, only the listeners(type), we want direct access to _events,so ... 
+declare module "events" {
+     export class EventEmitter implements NodeJS.EventEmitter {
+	 	_events:string[]; 
+	 }
+}
 declare module "socket.io.users" {
 	import { EventEmitter } from 'events';
 	import { Application } from "express";

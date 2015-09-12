@@ -18,17 +18,20 @@ function ChatService($timeout, $q, $socket) {
   //all room names , joined and not joined.
   service.roomNames = [];
 
-  service.getRoom = function(roomName) {
+  service.getRoom = function (roomName) {
+    console.log('exec service.getRoom');
     for (var i = 0; i < service.rooms.length; i++) {
       var _room = service.rooms[i];
+      console.log("'i' room: " + _room.name + ' but searching for: ' + roomName);
       if (_room.name === roomName) {
         return _room;
       }
     }
+    console.log('end exec service.getRoom');
     return undefined;
   };
 
-  service.canJoin = function(roomName) {
+  service.canJoin = function (roomName) {
     var _room = service.getRoom(roomName);
     if (_room !== undefined) {
       var _roomUsers = _room.users;
@@ -45,6 +48,7 @@ function ChatService($timeout, $q, $socket) {
   }
 
   function receiveMessage(data) {
+    console.log('message received: ' + data.content);
     //isws edw xreiastei to $timeout(function(){...}); *
     service.getRoom(data.roomName).messages.push({
       roomName: data.roomName,
@@ -52,7 +56,7 @@ function ChatService($timeout, $q, $socket) {
       content: data.content,
       time: data.time
     });
-    console.log('message received; ' + data.content);
+
 
   }
 
@@ -62,18 +66,24 @@ function ChatService($timeout, $q, $socket) {
     console.log('Room ' + room.name + ' just created by ' + room.users[0].username);
   }
 
-  function roomRemoved(room){
+  function roomRemoved(room) {
     var roomIndex = service.roomNames.indexOf(room.name);
-    if(roomIndex!==-1){
-      service.roomNames.splice(roomIndex,1);
+    if (roomIndex !== -1) {
+      service.roomNames.splice(roomIndex, 1);
     }
   }
 
   function userJoinedRoom(joinedData) {
+    console.log("start userJoinedRoom: ", joinedData);
     var room = service.getRoom(joinedData.roomName);
-    room.users.push(joinedData.user);
+    if (room !== undefined) {
+      room.users.push(joinedData.user);
 
-    console.log('A user with username ' + joinedData.user.username + ' joined to ' + joinedData.roomName);
+      console.log('A user with username ' + joinedData.user.username + ' joined to ' + joinedData.roomName);
+    } else {
+      console.log('something goes wrong here...on chat-service.js.userJoinedRoom');
+    }
+
   }
 
   function userLeftRoom(leftData) {
@@ -112,19 +122,19 @@ function ChatService($timeout, $q, $socket) {
     //console.log('A user with username ' + leftData.user.username + ' left from ' + leftData.roomName);
   }
 
-  service.initSocketEvents = function() {
+  service.initSocketEvents = function () {
     $socket.on('disconnect', userDisconnect);
     $socket.on('receive message', receiveMessage);
     $socket.on('room created', roomCreated);
-    $socket.on('room removed',roomRemoved);
+    $socket.on('room removed', roomRemoved);
     $socket.on('user joined room', userJoinedRoom);
     $socket.on('user left room', userLeftRoom);
 
   };
 
-  service.connect = function() {
+  service.connect = function () {
     var deferred = $q.defer();
-    $socket.connect().then(function() {
+    $socket.connect().then(function () {
       service.initSocketEvents();
       deferred.resolve();
     });
@@ -132,12 +142,12 @@ function ChatService($timeout, $q, $socket) {
     return deferred.promise;
   };
 
-  service.sendMessage = function(roomName, msg) {
+  service.sendMessage = function (roomName, msg) {
     var deferred = $q.defer();
     $socket.emit('send message', {
       roomName: roomName,
       message: msg
-    }, function(newMsg) {
+    }, function (newMsg) {
       if (newMsg) {
         console.dir(service.getRoom(roomName));
         service.getRoom(roomName).messages.push(newMsg);
@@ -150,25 +160,27 @@ function ChatService($timeout, $q, $socket) {
     return deferred.promise;
   };
 
-  service.joinRoom = function(roomName) {
+  service.joinRoom = function (roomName) {
     var deferred = $q.defer();
 
     $socket.emit('join room', {
-        roomName: roomName
-      },
-      function(theRoom) {
+      roomName: roomName
+    },
+      function (theRoom) {
         if (theRoom) {
           //service.getRoom(roomName).users.push(me);
           service.rooms.push(theRoom);
+          console.log("chat-service.js.joinRoom: " + theRoom);
           deferred.resolve(theRoom);
         } else {
+          console.log("chat-service.js.joinRoom: ERROR", theRoom);
           deferred.reject('Cannot join the room!');
         }
       });
     return deferred.promise;
   };
 
-  service.leaveRoom = function(roomName) {
+  service.leaveRoom = function (roomName) {
     $socket.emit('leave room', {
       roomName: roomName
     });
